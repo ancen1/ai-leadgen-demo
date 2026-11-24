@@ -21,7 +21,7 @@
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--canvas);color:var(--ink);font-family:var(--sans);
+body{margin:0;overflow-x:hidden;background:var(--canvas);color:var(--ink);font-family:var(--sans);
   font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 button,textarea,input{font-family:inherit}
@@ -82,7 +82,7 @@ section{background:var(--paper);border:1px solid var(--line);border-radius:var(-
 .sec-tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--blue-d);
   background:var(--blue-soft);border:1px solid var(--blue-line);padding:4px 9px;border-radius:6px}
 h2{font-size:19px;font-weight:700;margin:0;letter-spacing:-.015em}
-.hint{color:var(--muted);font-size:12.5px;margin:0 0 24px;line-height:1.7}
+.hint{color:var(--muted);font-size:13.5px;margin:0 0 24px;line-height:1.75}
 h3,h4{margin:0}
 
 /* ---------- pipeline ---------- */
@@ -209,24 +209,26 @@ button.copy:hover{background:rgba(127,192,164,.1)}
 .rules{margin-top:22px;border-top:1px solid var(--line-soft);padding-top:18px}
 .rules h4{font-size:12.5px;margin:0 0 10px;color:var(--ink-2)}
 .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:9px}
-table{width:100%;border-collapse:collapse;font-size:12px;min-width:520px}
-th,td{border-bottom:1px solid var(--line);padding:9px 12px;text-align:left;white-space:nowrap}
-th{color:var(--muted);font-weight:600;background:var(--canvas);font-family:var(--mono);font-size:10.5px;letter-spacing:.03em}
-td.mono{font-family:var(--mono);color:var(--ink-2);text-align:right}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:600px}
+table.fixed{table-layout:fixed}
+th,td{border-bottom:1px solid var(--line);padding:13px 16px;text-align:left;white-space:nowrap}
+th{color:var(--muted);font-weight:600;background:var(--canvas);font-family:var(--mono);font-size:11px;letter-spacing:0;white-space:normal;line-height:1.4}
+table.fixed th:nth-child(n+4),table.fixed td:nth-child(n+4){text-align:center}
+td.mono{font-family:var(--mono);color:var(--ink-2);font-variant-numeric:tabular-nums}
 tr:last-child td{border-bottom:none}
 
 /* ---------- dashboard ---------- */
 .funnel{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
 .fstage{border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;background:var(--paper)}
-.fstage .fk{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.06em}
+.fstage .fk{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.06em}
 .fstage .fv{font-family:var(--mono);font-size:23px;font-weight:600;margin:4px 0 10px;letter-spacing:-.04em;color:var(--ink)}
 .fbar{height:5px;border-radius:5px;background:var(--canvas);overflow:hidden}
 .fbar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue-d),var(--blue));border-radius:5px;transition:width .6s var(--ease)}
 .fstage:nth-child(n+3) .fbar i{background:linear-gradient(90deg,#a05f34,#e0a06a)}
-.frate{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:7px}
+.frate{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:7px}
 .frate b{color:var(--teal);font-weight:600}
 .conclusion{background:var(--amber-soft);border:1px solid var(--amber-line);border-left:3px solid var(--amber);
-  border-radius:var(--r);padding:14px 17px;font-size:12.5px;color:#78350f;line-height:1.75;margin-top:16px}
+  border-radius:var(--r);padding:16px 19px;font-size:13.5px;color:#78350f;line-height:1.8;margin-top:18px}
 .conclusion b{color:#8f6a24}
 
 /* ---------- fit cards ---------- */
@@ -241,23 +243,30 @@ tr:last-child td{border-bottom:none}
 .fit:nth-child(2) .pnum{color:#9a5a30}
 .fit:nth-child(3) .pnum{color:#8f6a24}
 .fit h4{font-size:13px;margin:8px 0 9px;font-weight:650}
-.fit p{font-size:12px;color:var(--muted);margin:0 0 12px;line-height:1.7}
-.fit .map{font-size:11.5px;color:var(--ink-2);background:var(--canvas);border-radius:7px;padding:9px 11px;
+.fit p{font-size:13px;color:var(--muted);margin:0 0 12px;line-height:1.7}
+.fit .map{font-size:12.5px;color:var(--ink-2);background:var(--canvas);border-radius:7px;padding:9px 11px;
   border-left:2px solid var(--blue-d);line-height:1.6}
 .fit:nth-child(2) .map{border-left-color:var(--teal)}
 .fit:nth-child(3) .map{border-left-color:var(--amber)}
 
 /* ---------- gallery ---------- */
 .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-.shot{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#fff;cursor:zoom-in;transition:.22s var(--ease)}
+.shot{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#fff;cursor:zoom-in;transition:.22s var(--ease);min-width:0}
 .shot:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
-.shot img{width:100%;display:block;height:300px;object-fit:contain;background:#eef2f7}
-.shot-ph{height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;text-align:center;padding:18px;
+.shot img{width:100%;max-width:100%;display:block;height:auto;object-fit:contain;background:#eef2f7}
+.shot-stat{display:flex;align-items:baseline;gap:9px;padding:14px 16px 12px;border-bottom:1px solid var(--line);background:var(--paper)}
+.shot-stat b{font-family:var(--mono);font-size:30px;font-weight:600;color:var(--blue-d);letter-spacing:-.04em;line-height:1}
+.shot-stat em{font-style:normal;font-size:13px;color:var(--muted)}
+.shot-stat span{margin-left:auto;font-family:var(--mono);font-size:11px;color:#9a5a30;background:var(--teal-soft);border:1px solid var(--teal-line);border-radius:4px;padding:2px 8px}
+.shot:nth-child(2) .shot-stat b{color:#9a5a30}
+.shot:nth-child(3) .shot-stat b{color:#8f6a24}
+.shot:nth-child(4) .shot-stat b{color:var(--blue-d)}
+.shot-ph{aspect-ratio:878/1920;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;text-align:center;padding:18px;
   background:repeating-linear-gradient(45deg,#faf8f3,#faf8f3 10px,#f2efe8 10px,#f2efe8 20px)}
 .shot-ph svg{width:26px;height:26px;stroke:var(--faint);fill:none;stroke-width:1.5}
 .shot-ph b{font-size:12.5px;color:var(--ink-2);font-weight:600}
 .shot-ph span{font-family:var(--mono);font-size:10px;color:var(--faint)}
-.shot-cap{padding:11px 14px;font-size:12px;color:var(--ink-2);border-top:1px solid var(--line);background:#fff}
+.shot-cap{padding:12px 16px;font-size:12.5px;color:var(--ink-2);border-top:1px solid var(--line);background:var(--paper)}
 .shot-cap em{font-family:var(--mono);font-style:normal;font-size:10px;color:var(--blue-d);margin-right:7px;font-weight:700}
 .shot-cap b{font-size:12.5px;color:var(--ink);font-weight:650}
 .shot-cap span{display:block;font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:5px;line-height:1.5}
@@ -329,7 +338,7 @@ tr:last-child td{border-bottom:none}
   .fstage{padding:12px 13px}
   .fstage .fv{font-size:20px}
   .fitgrid{grid-template-columns:1fr;gap:12px}
-  .gallery{grid-template-columns:1fr;gap:12px}
+  .gallery{grid-template-columns:1fr;gap:14px}
   .shot img{max-height:none}
   .mobile-tabs a{font-size:9px}
   .mobile-tabs a svg{width:17px;height:17px}
@@ -366,7 +375,7 @@ tr:last-child td{border-bottom:none}
     <span class="logo-text">LeadFlow <em>/</em> <b>AI 内容获客工作流</b></span>
   </div>
   <div class="topnav">
-    <a href="#flow">工作流</a><a href="#case">内容案例</a><a href="#screen">线索初筛</a><a href="#review">数据复盘</a><a href="#fit">能力匹配</a><a href="#gallery">作品集截图</a>
+    <a href="#gallery">真实战绩</a><a href="#flow">工作流</a><a href="#case">内容案例</a><a href="#screen">线索初筛</a><a href="#review">数据复盘</a><a href="#fit">能力匹配</a>
   </div>
   <div class="top-status"><span class="live"><i></i>DEMO</span><span class="ver">v1.0</span></div>
 </div>
@@ -389,8 +398,19 @@ tr:last-child td{border-bottom:none}
 </div>
 </header>
 
+<section id="gallery">
+<div class="sec-head"><span class="sec-tag">02 / TRACK RECORD</span><h2>真实战绩 · 后台数据</h2></div>
+<p class="hint">这些不是模拟数据，是我实际操盘的 TikTok 账号后台截图（未修饰）。四个数字分别对应四种能力：内容规模、爆款产出、粉丝留存、获客增长。点击放大，手机可左右滑动。</p>
+<div class="gallery" id="galleryGrid">
+  <div class="shot" data-src="images/portfolio-01.jpg"><div class="shot-stat"><b>2M</b><em>28 天播放量</em><span>+17.6%</span></div><div class="shot-ph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg><b>加载中…</b></div><div class="shot-cap"><em>01</em><b>核心指标总览</b><span>评论 3.9K（+1135.1%）· 主页访问 13K（+40.2%）</span></div></div>
+  <div class="shot" data-src="images/portfolio-02.jpg"><div class="shot-stat"><b>459K</b><em>单条最高播放</em><span>TOP 1</span></div><div class="shot-ph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg><b>加载中…</b></div><div class="shot-cap"><em>02</em><b>人气作品 Top 5</b><span>96K–459K 播放 · "How to" 模板化选题</span></div></div>
+  <div class="shot" data-src="images/portfolio-03.jpg"><div class="shot-stat"><b>6,521</b><em>账号粉丝</em><span>265.4K 赞</span></div><div class="shot-ph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg><b>加载中…</b></div><div class="shot-cap"><em>03</em><b>账号主页与内容矩阵</b><span>置顶 + 九宫格布局，矩阵化运营</span></div></div>
+  <div class="shot" data-src="images/portfolio-04.jpg"><div class="shot-stat"><b>1.6M</b><em>28 天观众</em><span>新观众 +15.7%</span></div><div class="shot-ph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg><b>加载中…</b></div><div class="shot-cap"><em>04</em><b>观众增长与画像</b><span>新观众 1.5M · 性别/年龄/地域分布</span></div></div>
+</div>
+</section>
+
 <section id="flow">
-<div class="sec-head"><span class="sec-tag">01 / PIPELINE</span><h2>工作流闭环</h2></div>
+<div class="sec-head"><span class="sec-tag">03 / PIPELINE</span><h2>工作流闭环</h2></div>
 <p class="hint">五个环节首尾相连，重复动作被固化为模板与规则。换一个选题即可复用——这正是岗位要求的“把 AI 内容获客 SOP 从 0 到 1 搭起来”。</p>
 <div class="pipe">
   <div class="pipe-step"><div class="step-top"><span class="step-id">S1</span><span class="step-state"></span></div><h3>信号挖掘</h3><div class="io-row"><span class="io-tag in">IN</span><span>政策动态 / 竞品账号 / 评论问题</span></div><div class="io-row"><span class="io-tag out">OUT</span><span>选题清单 + 痛点排序</span></div></div>
@@ -412,7 +432,7 @@ tr:last-child td{border-bottom:none}
 </section>
 
 <section id="case">
-<div class="sec-head"><span class="sec-tag">02 / OUTPUT</span><h2>一条选题，三平台落地</h2></div>
+<div class="sec-head"><span class="sec-tag">04 / OUTPUT</span><h2>一条选题，三平台落地</h2></div>
 <p class="hint">选题：巴西税改落地——5 税并 2 税，卖家现在要做什么。同一事实，三种平台逻辑，三条都埋了咨询钩子。</p>
 <div class="tabs">
 <button class="tab on" data-t="wx"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10M7 13h10M7 17h6"/></svg>公众号图文</button>
@@ -460,7 +480,7 @@ tr:last-child td{border-bottom:none}
 </section>
 
 <section id="screen">
-<div class="sec-head"><span class="sec-tag">03 / ROUTING</span><h2>线索初筛器</h2></div>
+<div class="sec-head"><span class="sec-tag">05 / ROUTING</span><h2>线索初筛器</h2></div>
 <p class="hint">工作流 S4 的可交互演示。点一个示例，或直接输入评论/私信，看它如何被打标签、判优先级并生成对应话术。</p>
 <div class="examples">
 <button class="ex">请问巴西开店需要什么资料？</button>
@@ -495,7 +515,7 @@ tr:last-child td{border-bottom:none}
 </section>
 
 <section id="review">
-<div class="sec-head"><span class="sec-tag">04 / ANALYTICS</span><h2>数据复盘</h2></div>
+<div class="sec-head"><span class="sec-tag">06 / ANALYTICS</span><h2>数据复盘</h2></div>
 <p class="hint">跟踪完整漏斗，而不只是发布篇数。以下为演示数据，用于展示“看什么指标、怎么得出下一步动作”。</p>
 <div class="funnel">
 <div class="fstage"><div class="fk">IMPRESSIONS</div><div class="fv" id="f1">0</div><div class="fbar"><i style="width:100%"></i></div><div class="frate">漏斗起点</div></div>
@@ -504,7 +524,8 @@ tr:last-child td{border-bottom:none}
 <div class="fstage"><div class="fk">QUALIFIED LEADS</div><div class="fv" id="f4">0</div><div class="fbar"><i style="width:0.3%"></i></div><div class="frate" id="r4">—</div></div>
 </div>
 <div class="table-scroll">
-<table>
+<table class="fixed">
+<colgroup><col style="width:9%"><col style="width:15%"><col style="width:26%"><col style="width:20%"><col style="width:13%"><col style="width:8%"><col style="width:9%"></colgroup>
 <tr><th>WEEK</th><th>PLATFORM</th><th>ANGLE</th><th>IMPRESSIONS</th><th>ENGAGE</th><th>DM</th><th>LEADS</th></tr>
 <tr><td>W1</td><td>公众号</td><td>政策解读型</td><td class="mono">1,200</td><td class="mono">46</td><td class="mono">8</td><td class="mono">2</td></tr>
 <tr><td>W1</td><td>小红书</td><td>资料清单型</td><td class="mono">8,600</td><td class="mono">320</td><td class="mono">35</td><td class="mono">7</td></tr>
@@ -517,7 +538,7 @@ tr:last-child td{border-bottom:none}
 </section>
 
 <section id="fit">
-<div class="sec-head"><span class="sec-tag">05 / FIT</span><h2>我为什么能把它跑通</h2></div>
+<div class="sec-head"><span class="sec-tag">07 / FIT</span><h2>我为什么能把它跑通</h2></div>
 <p class="hint">以下三项来自过往真实工作经历，不是本 Demo 的演示数据。它们对应这个岗位最核心的三条要求。</p>
 <div class="fitgrid">
   <div class="fit"><div class="fit-top"><span class="fit-id">MATCH 01</span><span class="match">高匹配</span></div><div class="pnum">1h → 15min</div><h4>AI 工作流搭建能力</h4><p>独立搭建“导入素材→自动混剪→智能配音→批量成片”工作流，单条制作周期缩短 75%，产能提升约 300%。</p><div class="map">对应岗位：把 AI 内容工作流从 0 到 1 搭起来，不靠人工堆砌。</div></div>
@@ -526,16 +547,6 @@ tr:last-child td{border-bottom:none}
 </div>
 </section>
 
-<section id="gallery">
-<div class="sec-head"><span class="sec-tag">06 / PORTFOLIO</span><h2>作品集截图</h2></div>
-<p class="hint">过往真实账号的后台数据截图，未修饰。点击任意图片放大查看细节，手机端可左右滑动切换。数据口径见每张图下方标注。</p>
-<div class="gallery" id="galleryGrid">
-  <div class="shot" data-src="images/portfolio-01.jpg"><div class="shot-ph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg><b>加载中…</b></div><div class="shot-cap"><em>01</em><b>28 天核心指标总览</b><span>播放量 2M（+17.6%）· 评论 3.9K（+1135.1%）· 主页访问 13K（+40.2%）</span></div></div>
-  <div class="shot" data-src="images/portfolio-02.jpg"><div class="shot-ph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg><b>加载中…</b></div><div class="shot-cap"><em>02</em><b>人气作品 Top 5</b><span>单条 96K–459K 播放 · "How to" 系列模板化选题</span></div></div>
-  <div class="shot" data-src="images/portfolio-03.jpg"><div class="shot-ph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg><b>加载中…</b></div><div class="shot-cap"><em>03</em><b>账号主页与内容矩阵</b><span>6,521 粉丝 · 265.4K 获赞 · 置顶 + 九宫格内容布局</span></div></div>
-  <div class="shot" data-src="images/portfolio-04.jpg"><div class="shot-ph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg><b>加载中…</b></div><div class="shot-cap"><em>04</em><b>观众增长与画像</b><span>观众 1.6M · 新观众 1.5M（+15.7%）· 性别/年龄/地域分布</span></div></div>
-</div>
-</section>
 
 <div class="lightbox" id="lightbox">
 <button class="lb-close" id="lbClose" aria-label="关闭">×</button>
@@ -552,12 +563,13 @@ tr:last-child td{border-bottom:none}
 <button id="toTop" aria-label="返回顶部"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg></button>
 
 <nav class="mobile-tabs" aria-label="移动端快捷导航">
-<a href="#flow" class="active"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="15" y="3" width="6" height="6" rx="1"/><rect x="9" y="15" width="6" height="6" rx="1"/><path d="M6 9v3h12V9M12 12v3"/></svg>工作流</a>
+<a href="#gallery" class="active"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>战绩</a>
+<a href="#flow"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="15" y="3" width="6" height="6" rx="1"/><rect x="9" y="15" width="6" height="6" rx="1"/><path d="M6 9v3h12V9M12 12v3"/></svg>工作流</a>
 <a href="#case"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg>内容案例</a>
 <a href="#screen"><svg viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg>线索初筛</a>
 <a href="#review"><svg viewBox="0 0 24 24"><path d="M3 3v18h18M7 16l4-5 4 3 5-7"/></svg>数据复盘</a>
 <a href="#fit"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M8.5 13l-1.5 8 5-3 5 3-1.5-8"/></svg>能力匹配</a>
-<a href="#gallery"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>作品集</a>
+
 </nav>
 
 <script>
@@ -620,7 +632,7 @@ var toTop=document.getElementById('toTop');
 window.addEventListener('scroll',function(){toTop.classList.toggle('show',window.scrollY>360);},{passive:true});
 toTop.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
 var links=document.querySelectorAll('a[href^="#"]');
-var sections=['flow','case','screen','review','fit','gallery'].map(function(id){return document.getElementById(id);});
+var sections=['gallery','flow','case','screen','review','fit'].map(function(id){return document.getElementById(id);});
 window.addEventListener('scroll',function(){
   var cur='';
   sections.forEach(function(s){if(s && s.getBoundingClientRect().top<=140){cur=s.id;}});
@@ -635,7 +647,7 @@ window.addEventListener('scroll',function(){
     var img=new Image();
     img.onload=function(){
       s.querySelector('.shot-ph').style.display='none';
-      s.insertBefore(img,s.firstChild);
+      s.insertBefore(img,s.querySelector('.shot-ph'));
       img.alt=s.querySelector('.shot-cap').textContent;
       loaded.push(img);
     };
