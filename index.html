@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1220">
+<title>AI 内容获客工作流 · 曾文芳 / Case Study</title>
+<style>
+:root{
+  --navy:#0b1220;--navy-2:#131c30;--navy-line:#24304a;
+  --blue:#3b82f6;--blue-d:#2563eb;--blue-soft:#eff6ff;--blue-line:#bfdbfe;
+  --teal:#14b8a6;--teal-soft:#f0fdfa;--teal-line:#99f6e4;
+  --amber:#f59e0b;--amber-soft:#fffbeb;--amber-line:#fde68a;
+  --ink:#0f172a;--ink-2:#334155;--muted:#64748b;--faint:#94a3b8;
+  --line:#e5e9f0;--line-soft:#f0f3f7;--paper:#fff;--canvas:#f5f7fa;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --r:12px;--r-lg:16px;
+  --ease:cubic-bezier(.2,.7,.3,1);
+  --shadow:0 1px 2px rgba(15,23,42,.04),0 6px 20px rgba(15,23,42,.04);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--canvas);color:var(--ink);font-family:var(--sans);
+  font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button,textarea,input{font-family:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px calc(96px + env(safe-area-inset-bottom))}
+section{scroll-margin-top:78px}
+.mono{font-family:var(--mono)}
+
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:0;z-index:40;background:var(--navy);border-bottom:1px solid var(--navy-line)}
+.topbar-in{max-width:1120px;margin:0 auto;padding:0 24px;height:54px;display:flex;align-items:center;gap:22px}
+.logo{display:flex;align-items:center;gap:9px;white-space:nowrap}
+.logo-mark{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--blue),var(--teal));
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700;color:#fff}
+.logo-text{color:#f1f5f9;font-size:13px;font-weight:600;letter-spacing:-.01em}
+.logo-text em{color:var(--faint);font-style:normal;margin:0 2px}
+.logo-text b{color:var(--faint);font-weight:400;font-size:12px}
+.topnav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.topnav::-webkit-scrollbar{display:none}
+.topnav a{font-size:12.5px;color:#94a3b8;white-space:nowrap;padding:6px 11px;border-radius:7px;transition:.18s var(--ease)}
+.topnav a:hover{color:#fff;background:rgba(255,255,255,.07)}
+.topnav a.active{color:#fff;background:rgba(59,130,246,.2)}
+.top-status{margin-left:auto;display:flex;align-items:center;gap:12px;white-space:nowrap}
+.live{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;color:#6ee7b7;letter-spacing:.08em}
+.live i{width:6px;height:6px;border-radius:50%;background:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.16)}
+.ver{font-family:var(--mono);font-size:10px;color:#64748b;border:1px solid var(--navy-line);border-radius:5px;padding:2px 7px}
+
+/* ---------- hero ---------- */
+.hero{background:var(--navy);color:#fff;position:relative;overflow:hidden;
+  margin:0 -24px 22px;padding:48px 48px 0}
+.hero-grid{position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:34px 34px;
+  -webkit-mask-image:radial-gradient(ellipse at 72% 28%,#000 10%,transparent 72%);
+  mask-image:radial-gradient(ellipse at 72% 28%,#000 10%,transparent 72%)}
+.hero-glow{position:absolute;right:-80px;top:-140px;width:460px;height:460px;border-radius:50%;
+  background:radial-gradient(circle,rgba(59,130,246,.18),transparent 68%);pointer-events:none}
+.hero-in{position:relative;max-width:1120px;margin:0 auto}
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:#60a5fa;text-transform:uppercase;margin-bottom:16px}
+.hero h1{font-size:clamp(26px,3.4vw,36px);line-height:1.28;margin:0 0 14px;font-weight:750;letter-spacing:-.03em;max-width:760px}
+.hero .lead{font-size:14.5px;color:#b6c2d4;margin:0 0 20px;max-width:700px;line-height:1.8}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:34px}
+.chip{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:#cbd5e1;
+  border:1px solid var(--navy-line);background:rgba(255,255,255,.03);border-radius:6px;padding:4px 10px}
+.chip b{color:#5eead4;font-weight:500}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--navy-line)}
+.kpi{padding:20px 20px 22px 0}
+.kpi + .kpi{border-left:1px solid var(--navy-line);padding-left:24px}
+.kpi .v{font-family:var(--mono);font-size:clamp(19px,2.5vw,25px);font-weight:600;letter-spacing:-.04em;color:#fff}
+.kpi .v b{color:#60a5fa;font-weight:600}
+.kpi:nth-child(2) .v b{color:#2dd4bf}
+.kpi:nth-child(3) .v b{color:#fbbf24}
+.kpi .k{font-size:11.5px;color:#8b9ab1;margin-top:6px;line-height:1.55}
+
+/* ---------- section frame ---------- */
+section{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:30px 34px;margin-bottom:20px;box-shadow:var(--shadow)}
+.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:7px}
+.sec-tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--blue-d);
+  background:var(--blue-soft);border:1px solid var(--blue-line);padding:4px 9px;border-radius:6px}
+h2{font-size:19px;font-weight:700;margin:0;letter-spacing:-.015em}
+.hint{color:var(--muted);font-size:12.5px;margin:0 0 24px;line-height:1.7}
+h3,h4{margin:0}
+
+/* ---------- pipeline ---------- */
+.pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.pipe-step{border:1px solid var(--line);border-radius:var(--r);background:var(--paper);padding:16px 14px 14px;
+  position:relative;transition:.22s var(--ease)}
+.pipe-step:hover{border-color:var(--blue-line);box-shadow:var(--shadow);transform:translateY(-2px)}
+.pipe-step:not(:last-child):after{content:"";position:absolute;right:-10px;top:50%;width:10px;height:1px;background:var(--line);z-index:2}
+.pipe-step:not(:last-child):before{content:"";position:absolute;right:-10px;top:50%;width:5px;height:5px;
+  border-top:1px solid var(--faint);border-right:1px solid var(--faint);transform:translateY(-50%) rotate(45deg);z-index:3}
+.step-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.step-id{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--blue-d);letter-spacing:.06em}
+.step-state{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.14)}
+.pipe-step:nth-child(n+4) .step-id{color:var(--teal)}
+.pipe-step h3{font-size:13.5px;margin:0 0 11px;font-weight:650}
+.io-row{display:flex;gap:7px;align-items:flex-start;font-size:11px;line-height:1.6;color:var(--ink-2);margin-top:5px}
+.io-tag{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.04em;padding:1px 5px;border-radius:4px;flex-shrink:0;margin-top:1px}
+.io-tag.in{background:var(--blue-soft);color:var(--blue-d)}
+.io-tag.out{background:var(--teal-soft);color:#0f766e}
+details{margin-top:22px;border:1px solid var(--line);border-radius:var(--r);background:var(--canvas);overflow:hidden}
+summary{cursor:pointer;padding:12px 17px;font-size:12.5px;font-weight:600;color:var(--blue-d);list-style:none;
+  display:flex;align-items:center;gap:9px;min-height:44px}
+summary::-webkit-details-marker{display:none}
+summary .plus{display:inline-flex;width:17px;height:17px;align-items:center;justify-content:center;
+  border:1px solid var(--blue-line);border-radius:4px;font-family:var(--mono);font-size:12px;transition:.2s}
+details[open] summary .plus{transform:rotate(45deg);background:var(--blue-d);color:#fff;border-color:var(--blue-d)}
+.det-body{padding:2px 18px 18px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line-soft)}
+.det-body ul{margin:12px 0 0;padding-left:18px}
+.det-body li{margin:6px 0;line-height:1.75}
+.det-body b{color:var(--ink-2)}
+
+/* ---------- window / tabs ---------- */
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px;border-bottom:1px solid var(--line);padding-bottom:13px}
+.tab{border:1px solid var(--line);background:var(--paper);color:var(--muted);border-radius:8px;
+  padding:8px 15px;font-size:12.5px;cursor:pointer;transition:.18s var(--ease);min-height:38px;
+  display:flex;align-items:center;gap:7px}
+.tab svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8}
+.tab:hover{border-color:var(--blue-line);color:var(--blue-d);background:var(--blue-soft)}
+.tab.on{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:600}
+.panel{display:none;animation:fade .28s var(--ease)}
+.panel.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.win{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#fff;max-width:680px;box-shadow:var(--shadow)}
+.win-bar{background:#f8fafc;border-bottom:1px solid var(--line);padding:9px 13px;display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%}
+.dot.r{background:#fb7185}.dot.y{background:#fbbf24}.dot.g{background:#34d399}
+.win-url{margin-left:10px;font-family:var(--mono);font-size:10px;color:var(--muted);
+  background:#fff;border:1px solid var(--line);border-radius:5px;padding:2px 9px;flex:1}
+.win-body{padding:24px 26px}
+.win-body h3{font-size:17px;line-height:1.55;margin:0 0 14px;font-weight:700;letter-spacing:-.01em}
+.win-body p{font-size:13px;color:var(--ink-2);margin:10px 0;line-height:1.75}
+.win-body p b{color:var(--blue-d);font-weight:650}
+.quote{border-left:3px solid var(--blue);background:var(--blue-soft);padding:12px 15px;border-radius:0 8px 8px 0;
+  font-size:12.5px;color:var(--ink-2);margin:15px 0}
+.win-foot{border-top:1px dashed var(--line);padding:12px 26px;font-size:12px;color:var(--blue-d);
+  background:#fbfcfe;font-weight:600}
+.meta-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.meta{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;color:var(--muted);
+  border:1px solid var(--line);border-radius:4px;padding:2px 7px;background:var(--canvas)}
+.meta b{color:var(--teal);font-weight:600}
+
+.xhsgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.note{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#fff;transition:.22s var(--ease)}
+.note:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.cover{height:104px;display:flex;align-items:center;justify-content:center;text-align:center;padding:11px;
+  font-size:14px;font-weight:750;color:#fff;line-height:1.45;position:relative}
+.cover:after{content:attr(data-id);position:absolute;right:9px;top:8px;font-family:var(--mono);
+  font-size:9px;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.45);border-radius:4px;padding:1px 5px}
+.cover.c1{background:linear-gradient(135deg,#e11d48,#9f1239)}
+.cover.c2{background:linear-gradient(135deg,#0d9488,#115e59)}
+.cover.c3{background:linear-gradient(135deg,#4f46e5,#3730a3)}
+.note-body{padding:13px 15px}
+.note-body h4{font-size:12.5px;margin:0 0 6px;line-height:1.45}
+.note-body p{font-size:11px;color:var(--muted);margin:0 0 9px;line-height:1.6}
+.tags{font-size:10.5px;color:var(--blue-d)}
+
+.timeline{position:relative;padding-left:26px;max-width:720px}
+.timeline:before{content:"";position:absolute;left:6px;top:8px;bottom:8px;width:2px;background:var(--line)}
+.tl-item{position:relative;margin-bottom:20px}
+.tl-item:before{content:"";position:absolute;left:-25px;top:7px;width:12px;height:12px;border-radius:50%;
+  background:#fff;border:2.5px solid var(--blue-d);box-shadow:0 0 0 3px #fff}
+.tl-item:nth-child(4):before{border-color:var(--teal)}
+.tl-time{font-family:var(--mono);font-size:10.5px;font-weight:600;color:var(--blue-d);letter-spacing:.03em}
+.tl-item:nth-child(4) .tl-time{color:#0f766e}
+.tl-text{font-size:13px;margin-top:3px;color:var(--ink-2);line-height:1.7}
+
+/* ---------- console / screener ---------- */
+.examples{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+.ex{border:1px solid var(--line);background:var(--canvas);color:var(--muted);border-radius:999px;
+  padding:7px 13px;font-size:11.5px;cursor:pointer;transition:.18s var(--ease);min-height:36px}
+.ex:hover{border-color:var(--blue-line);color:var(--blue-d);background:var(--blue-soft);transform:translateY(-1px)}
+.console{display:grid;grid-template-columns:1fr 360px;gap:16px;align-items:start}
+.term{background:var(--navy);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
+.term-bar{display:flex;align-items:center;gap:7px;padding:9px 13px;border-bottom:1px solid var(--navy-line)}
+.term-bar span{font-family:var(--mono);font-size:10px;color:#64748b}
+.term-bar .live{margin-left:auto}
+.term-body{padding:15px 16px}
+.term-label{font-family:var(--mono);font-size:10.5px;color:#34d399;margin-bottom:8px}
+.term-input{width:100%;min-height:88px;background:transparent;border:none;outline:none;resize:vertical;
+  color:#e2e8f0;font-family:var(--mono);font-size:12.5px;line-height:1.7}
+.term-input::placeholder{color:#475569}
+.term-foot{display:flex;align-items:center;gap:10px;margin-top:12px;border-top:1px solid var(--navy-line);padding-top:12px}
+button.run{background:var(--blue-d);color:#fff;border:none;border-radius:7px;padding:9px 18px;
+  font-family:var(--mono);font-size:11.5px;cursor:pointer;font-weight:600;min-height:38px;transition:.18s var(--ease)}
+button.run:hover{background:var(--blue)}
+.term-hint{font-family:var(--mono);font-size:10px;color:#475569}
+.result{background:var(--navy-2);border:1px solid var(--navy-line);border-radius:var(--r);
+  padding:16px;font-family:var(--mono);font-size:11.5px;color:#cbd5e1;display:none;animation:fade .25s var(--ease)}
+.result.on{display:block}
+.result .head{font-size:10px;color:#5eead4;letter-spacing:.08em;margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid var(--navy-line)}
+.jline{display:flex;gap:9px;margin:7px 0;line-height:1.6}
+.jkey{color:#7dd3fc;min-width:76px}
+.jval{color:#e2e8f0;flex:1;word-break:break-word}
+.jval .str{color:#fbbf24}
+.prio{display:inline-block;border-radius:4px;padding:1px 7px;font-size:10px;font-weight:700}
+.prio.high{background:rgba(248,113,113,.16);color:#fca5a5}
+.prio.mid{background:rgba(251,191,36,.16);color:#fcd34d}
+.prio.low{background:rgba(148,163,184,.16);color:#cbd5e1}
+.reply{margin-top:12px;padding:10px 12px;background:rgba(255,255,255,.04);border:1px solid var(--navy-line);border-radius:7px;line-height:1.7}
+.reply .jkey{color:#5eead4}
+button.copy{background:transparent;color:#7dd3fc;border:1px solid var(--navy-line);border-radius:5px;
+  padding:4px 9px;font-family:var(--mono);font-size:10px;cursor:pointer;margin-top:9px;min-height:28px}
+button.copy:hover{background:rgba(125,211,252,.1)}
+.rules{margin-top:22px;border-top:1px solid var(--line-soft);padding-top:18px}
+.rules h4{font-size:12.5px;margin:0 0 10px;color:var(--ink-2)}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:9px}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:520px}
+th,td{border-bottom:1px solid var(--line);padding:9px 12px;text-align:left;white-space:nowrap}
+th{color:var(--muted);font-weight:600;background:var(--canvas);font-family:var(--mono);font-size:10.5px;letter-spacing:.03em}
+td.mono{font-family:var(--mono);color:var(--ink-2);text-align:right}
+tr:last-child td{border-bottom:none}
+
+/* ---------- dashboard ---------- */
+.funnel{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.fstage{border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;background:var(--paper)}
+.fstage .fk{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.06em}
+.fstage .fv{font-family:var(--mono);font-size:23px;font-weight:600;margin:4px 0 10px;letter-spacing:-.04em;color:var(--ink)}
+.fbar{height:5px;border-radius:5px;background:var(--canvas);overflow:hidden}
+.fbar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue-d),var(--blue));border-radius:5px;transition:width .6s var(--ease)}
+.fstage:nth-child(n+3) .fbar i{background:linear-gradient(90deg,#0d9488,#2dd4bf)}
+.frate{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:7px}
+.frate b{color:var(--teal);font-weight:600}
+.conclusion{background:var(--amber-soft);border:1px solid var(--amber-line);border-left:3px solid var(--amber);
+  border-radius:var(--r);padding:14px 17px;font-size:12.5px;color:#78350f;line-height:1.75;margin-top:16px}
+.conclusion b{color:#b45309}
+
+/* ---------- fit cards ---------- */
+.fitgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.fit{border:1px solid var(--line);border-radius:var(--r);padding:19px;background:var(--paper);transition:.22s var(--ease)}
+.fit:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.fit-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.fit-id{font-family:var(--mono);font-size:10px;color:var(--faint);letter-spacing:.08em}
+.match{font-family:var(--mono);font-size:9.5px;color:#0f766e;background:var(--teal-soft);
+  border:1px solid var(--teal-line);border-radius:4px;padding:2px 7px}
+.fit .pnum{font-family:var(--mono);font-size:clamp(20px,2.4vw,25px);font-weight:600;color:var(--blue-d);letter-spacing:-.04em;line-height:1.2}
+.fit:nth-child(2) .pnum{color:#0f766e}
+.fit:nth-child(3) .pnum{color:#b45309}
+.fit h4{font-size:13px;margin:8px 0 9px;font-weight:650}
+.fit p{font-size:12px;color:var(--muted);margin:0 0 12px;line-height:1.7}
+.fit .map{font-size:11.5px;color:var(--ink-2);background:var(--canvas);border-radius:7px;padding:9px 11px;
+  border-left:2px solid var(--blue-d);line-height:1.6}
+.fit:nth-child(2) .map{border-left-color:var(--teal)}
+.fit:nth-child(3) .map{border-left-color:var(--amber)}
+
+/* ---------- gallery ---------- */
+.gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.shot{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#fff;cursor:zoom-in;transition:.22s var(--ease)}
+.shot:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.shot img{width:100%;display:block;height:300px;object-fit:contain;background:#eef2f7}
+.shot-ph{height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;text-align:center;padding:18px;
+  background:repeating-linear-gradient(45deg,#f8fafc,#f8fafc 10px,#f1f5f9 10px,#f1f5f9 20px)}
+.shot-ph svg{width:26px;height:26px;stroke:var(--faint);fill:none;stroke-width:1.5}
+.shot-ph b{font-size:12.5px;color:var(--ink-2);font-weight:600}
+.shot-ph span{font-family:var(--mono);font-size:10px;color:var(--faint)}
+.shot-cap{padding:11px 14px;font-size:12px;color:var(--ink-2);border-top:1px solid var(--line);background:#fff}
+.shot-cap em{font-family:var(--mono);font-style:normal;font-size:10px;color:var(--blue-d);margin-right:7px;font-weight:700}
+.shot-cap b{font-size:12.5px;color:var(--ink);font-weight:650}
+.shot-cap span{display:block;font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:5px;line-height:1.5}
+.lightbox{position:fixed;inset:0;z-index:100;background:rgba(11,18,32,.96);display:none;align-items:center;justify-content:center;padding:24px}
+.lightbox.on{display:flex}
+.lightbox img{max-width:100%;max-height:80vh;border-radius:8px;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+.lb-close,.lb-nav{position:absolute;width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.22);
+  background:rgba(255,255,255,.07);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:21px}
+.lb-close{top:18px;right:22px;font-size:24px}
+.lb-nav{top:50%;transform:translateY(-50%)}
+.lb-prev{left:22px}.lb-next{right:22px}
+.lb-count{position:absolute;bottom:20px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:11px;color:#94a3b8}
+
+.foot-note{font-family:var(--mono);font-size:10.5px;color:var(--faint);text-align:center;padding:12px 20px 0;line-height:1.9}
+
+/* ---------- to top ---------- */
+#toTop{position:fixed;right:22px;bottom:calc(24px + env(safe-area-inset-bottom));z-index:30;
+  width:42px;height:42px;border-radius:50%;background:var(--navy);border:1px solid var(--navy-line);
+  box-shadow:var(--shadow);color:#93c5fd;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;opacity:0;pointer-events:none;transition:.25s var(--ease)}
+#toTop.show{opacity:1;pointer-events:auto}
+#toTop:hover{background:var(--blue-d);color:#fff}
+
+.mobile-tabs{display:none}
+
+/* ---------- tablet ---------- */
+@media(max-width:980px){
+  .pipe{grid-template-columns:repeat(3,1fr)}
+  .pipe-step:after,.pipe-step:before{display:none}
+  .console{grid-template-columns:1fr}
+  .topnav{display:none}
+}
+/* ---------- phone ---------- */
+@media(max-width:640px){
+  .wrap{padding:0 14px calc(84px + env(safe-area-inset-bottom))}
+  .topbar-in{padding:0 14px;height:50px;gap:10px}
+  .logo-text{font-size:12px}
+  .logo-text b{display:none}
+  .top-status .ver{display:none}
+  .hero{margin:0 -14px 16px;padding:30px 20px 0}
+  .hero h1{font-size:24px}
+  .hero .lead{font-size:13px;margin-bottom:17px}
+  .eyebrow{font-size:9.5px}
+  .chips{gap:6px;margin-bottom:26px}
+  .chip{font-size:9.5px;padding:3px 8px}
+  .kpis{grid-template-columns:1fr}
+  .kpi{padding:14px 0;border-left:none!important}
+  .kpi + .kpi{border-top:1px solid var(--navy-line);padding-left:0}
+  .kpi .v{font-size:22px}
+  section{padding:22px 18px;margin-bottom:14px;border-radius:14px}
+  h2{font-size:18px}
+  .hint{font-size:12px;margin-bottom:18px}
+  .pipe{grid-template-columns:1fr;gap:9px}
+  .pipe-step{padding:13px 14px}
+  .tab{flex:1;min-width:calc(50% - 4px);justify-content:center;font-size:12px;min-height:42px}
+  .win-body{padding:19px 17px}
+  .win-body h3{font-size:15.5px}
+  .win-foot{padding:12px 17px}
+  .xhsgrid{grid-template-columns:1fr;gap:12px}
+  .cover{height:92px;font-size:13.5px}
+  .ex{min-height:40px;font-size:11.5px}
+  .term-input{font-size:12px}
+  button.run{width:100%;min-height:44px}
+  .result{font-size:11px}
+  .jline{flex-direction:column;gap:1px}
+  .jkey{min-width:0;font-size:10px}
+  button.copy{width:100%;min-height:32px;margin-left:0}
+  .funnel{grid-template-columns:1fr 1fr;gap:10px}
+  .fstage{padding:12px 13px}
+  .fstage .fv{font-size:20px}
+  .fitgrid{grid-template-columns:1fr;gap:12px}
+  .gallery{grid-template-columns:1fr;gap:12px}
+  .shot img{max-height:none}
+  .mobile-tabs a{font-size:9px}
+  .mobile-tabs a svg{width:17px;height:17px}
+  .lb-nav{width:36px;height:36px;font-size:18px}
+  .lb-prev{left:10px}.lb-next{right:10px}
+  .foot-note{font-size:9.5px}
+  #toTop{bottom:calc(78px + env(safe-area-inset-bottom));right:14px;width:38px;height:38px}
+  .mobile-tabs{
+    display:flex;position:fixed;left:0;right:0;bottom:0;z-index:50;
+    background:rgba(11,18,32,.97);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border-top:1px solid var(--navy-line);padding:7px 4px calc(7px + env(safe-area-inset-bottom));justify-content:space-around}
+  .mobile-tabs a{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:#94a3b8;
+    flex:1;min-height:48px;justify-content:center;border-radius:8px;transition:.18s}
+  .mobile-tabs a svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .mobile-tabs a.active{color:#93c5fd;background:rgba(59,130,246,.16)}
+}
+@media print{
+  .topbar,.mobile-tabs,#toTop,button,.examples{display:none!important}
+  body{background:#fff}
+  .hero{background:#fff!important;color:#111!important;margin:0}
+  .hero h1,.hero .lead,.kpi .v,.kpi .k{color:#111!important}
+  .wrap{max-width:none;padding:0}
+  section,.hero{box-shadow:none;break-inside:avoid;page-break-inside:avoid;margin-bottom:12px}
+  .panel{display:block!important}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+<div class="topbar-in">
+  <div class="logo">
+    <span class="logo-mark">LF</span>
+    <span class="logo-text">LeadFlow <em>/</em> <b>AI 内容获客工作流</b></span>
+  </div>
+  <div class="topnav">
+    <a href="#flow">工作流</a><a href="#case">内容案例</a><a href="#screen">线索初筛</a><a href="#review">数据复盘</a><a href="#fit">能力匹配</a><a href="#gallery">作品集截图</a>
+  </div>
+  <div class="top-status"><span class="live"><i></i>DEMO</span><span class="ver">v1.0</span></div>
+</div>
+</div>
+
+<div class="wrap">
+
+<header class="hero">
+<div class="hero-grid"></div><div class="hero-glow"></div>
+<div class="hero-in">
+  <div class="eyebrow">Case study / Cross-border content acquisition</div>
+  <h1>把一条跨境选题，<br>跑成一条可获客的内容链路</h1>
+  <p class="lead">一个可交互的工作流演示：从政策热点调研出发，用 AI 一次生成公众号、小红书、视频号三种表达，再把评论与私信初筛成线索，最终用数据反哺下一轮选题。</p>
+  <div class="chips"><span class="chip">5 stages</span><span class="chip">3 platforms</span><span class="chip">1 closed loop</span><span class="chip">B2B <b>lead-gen</b></span></div>
+  <div class="kpis">
+    <div class="kpi"><div class="v">1h <b>→</b> 15min</div><div class="k">单条内容制作周期（真实经历：AI 自动剪辑工作流）</div></div>
+    <div class="kpi"><div class="v">10 <b>accts</b></div><div class="k">账号矩阵操盘经验，日均产出 20–35 条</div></div>
+    <div class="kpi"><div class="v">5,000<b>+ leads</b></div><div class="k">累计发布 1000+ 视频，引导下载 5000+ 次</div></div>
+  </div>
+</div>
+</header>
+
+<section id="flow">
+<div class="sec-head"><span class="sec-tag">01 / PIPELINE</span><h2>工作流闭环</h2></div>
+<p class="hint">五个环节首尾相连，重复动作被固化为模板与规则。换一个选题即可复用——这正是岗位要求的“把 AI 内容获客 SOP 从 0 到 1 搭起来”。</p>
+<div class="pipe">
+  <div class="pipe-step"><div class="step-top"><span class="step-id">S1</span><span class="step-state"></span></div><h3>信号挖掘</h3><div class="io-row"><span class="io-tag in">IN</span><span>政策动态 / 竞品账号 / 评论问题</span></div><div class="io-row"><span class="io-tag out">OUT</span><span>选题清单 + 痛点排序</span></div></div>
+  <div class="pipe-step"><div class="step-top"><span class="step-id">S2</span><span class="step-state"></span></div><h3>内容合成</h3><div class="io-row"><span class="io-tag in">IN</span><span>选题 + 人设 + 提示词模板</span></div><div class="io-row"><span class="io-tag out">OUT</span><span>三平台脚本 / 标题 / 封面</span></div></div>
+  <div class="pipe-step"><div class="step-top"><span class="step-id">S3</span><span class="step-state"></span></div><h3>数字人成片</h3><div class="io-row"><span class="io-tag in">IN</span><span>45 秒口播脚本</span></div><div class="io-row"><span class="io-tag out">OUT</span><span>AI 口播 + 字幕 + 剪映包装</span></div></div>
+  <div class="pipe-step"><div class="step-top"><span class="step-id">S4</span><span class="step-state"></span></div><h3>分发与初筛</h3><div class="io-row"><span class="io-tag in">IN</span><span>评论 / 私信</span></div><div class="io-row"><span class="io-tag out">OUT</span><span>线索标签 + 优先级 + 话术</span></div></div>
+  <div class="pipe-step"><div class="step-top"><span class="step-id">S5</span><span class="step-state"></span></div><h3>数据迭代</h3><div class="io-row"><span class="io-tag in">IN</span><span>曝光 / 互动 / 私信 / 线索</span></div><div class="io-row"><span class="io-tag out">OUT</span><span>选题与提示词的迭代动作</span></div></div>
+</div>
+<details>
+<summary><span class="plus">+</span>展开每一步的工具链与产出细节</summary>
+<div class="det-body"><ul>
+<li><b>S1 信号挖掘</b>：AI 摘要政策原文 + 竞品近 30 天高互动内容 + 评论区高频问题，交叉出「卖家最关心的 3 件事」。</li>
+<li><b>S2 内容合成</b>：一套提示词模板，同一事实生成公众号深度稿、3 篇小红书笔记、1 条 45 秒口播脚本，人设与咨询钩子保持一致。</li>
+<li><b>S3 数字人成片</b>：口播脚本拆成 20 字以内短句 → AI 口播/数字人 → 剪映加字幕与画面 → 不强制真人出镜。</li>
+<li><b>S4 分发与初筛</b>：三平台分发；评论与私信按关键词规则打标签、判优先级、给对应话术，有效线索流转给业务同事。</li>
+<li><b>S5 数据迭代</b>：按「曝光→互动→私信→有效线索」漏斗算转化率，把表现最好的选题与标题角度写回下一轮提示词。</li>
+</ul></div>
+</details>
+</section>
+
+<section id="case">
+<div class="sec-head"><span class="sec-tag">02 / OUTPUT</span><h2>一条选题，三平台落地</h2></div>
+<p class="hint">选题：巴西税改落地——5 税并 2 税，卖家现在要做什么。同一事实，三种平台逻辑，三条都埋了咨询钩子。</p>
+<div class="tabs">
+<button class="tab on" data-t="wx"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10M7 13h10M7 17h6"/></svg>公众号图文</button>
+<button class="tab" data-t="xhs"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="4"/></svg>小红书笔记</button>
+<button class="tab" data-t="sph"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/></svg>视频号脚本</button>
+</div>
+
+<div class="panel on" id="wx">
+<div class="win">
+<div class="win-bar"><i class="dot r"></i><i class="dot y"></i><i class="dot g"></i><span class="win-url">wechat / article / preview</span></div>
+<div class="win-body">
+<div class="meta-row"><span class="meta">FORMAT <b>图文</b></span><span class="meta">WORDS ~900</span><span class="meta">HOOK 政策解读</span></div>
+<h3>巴西税改落地：5 税并 2 税，跨境卖家最该关注的 3 个变化</h3>
+<div class="quote">过去一周被问得最多的，不是“巴西市场好不好”，而是“我现在的账务要不要重做”。答案没那么复杂，但确实有人会因此踩坑。</div>
+<p><b>变化一</b>　流转税简化，申报口径变了，不是税率的简单加减。</p>
+<p><b>变化二</b>　发票与合规要求更刚性，低报货值的风险在上升。</p>
+<p><b>变化三</b>　小额进口税收规则调整，直邮小包的成本模型要重算。</p>
+<p><b>行动清单</b>　资料准备 → 账务梳理 → 清关核验，三步走完基本不慌。</p>
+</div>
+<div class="win-foot">CTA · 评论区回复「巴西」领取《开店与合规资料清单》 →</div>
+</div>
+</div>
+
+<div class="panel" id="xhs">
+<div class="xhsgrid">
+  <div class="note"><div class="cover c1" data-id="N-01">巴西开店前<br>先看这张图</div><div class="note-body"><h4>5 份资料清单 + 2 个高频被拒原因</h4><p>把流程拆成图，新手照着准备就行。第 3 项最容易被退回。</p><div class="tags">#巴西开店 #跨境合规 #出海干货</div></div></div>
+  <div class="note"><div class="cover c2" data-id="N-02">税改后<br>小包还能做吗</div><div class="note-body"><h4>一张对比图讲清小额进口税变化</h4><p>直邮和海外仓成本结构完全不同，附测算思路。</p><div class="tags">#巴西税改 #跨境税务 #小包</div></div></div>
+  <div class="note"><div class="cover c3" data-id="N-03">巴西清关<br>踩坑实录</div><div class="note-body"><h4>HS 编码 / 低报货值 / 发票不一致</h4><p>三类高频问题自查清单，评论区领表格。</p><div class="tags">#清关避坑 #巴西物流 #卖家必看</div></div></div>
+</div>
+</div>
+
+<div class="panel" id="sph">
+<div class="win" style="max-width:740px">
+<div class="win-bar"><i class="dot r"></i><i class="dot y"></i><i class="dot g"></i><span class="win-url">video / script / 45s</span></div>
+<div class="win-body">
+<div class="meta-row"><span class="meta">DURATION <b>45s</b></span><span class="meta">FORMAT AI 口播</span><span class="meta">CAMERA <b>无真人出镜</b></span></div>
+<div class="timeline">
+<div class="tl-item"><div class="tl-time">00:00 — 00:03 / HOOK</div><div class="tl-text">「巴西税改落地，最慌的其实是这三类卖家。」</div></div>
+<div class="tl-item"><div class="tl-time">00:03 — 00:20 / INFO</div><div class="tl-text">三个变化，每条一句大白话解释，配政策关键词字幕。</div></div>
+<div class="tl-item"><div class="tl-time">00:20 — 00:35 / ACTION</div><div class="tl-text">给出可执行的三步清单，让观众知道现在该做什么。</div></div>
+<div class="tl-item"><div class="tl-time">00:35 — 00:45 / CTA</div><div class="tl-text">「完整清单评论区回复巴西，我发你。」AI 口播 + 字幕完成。</div></div>
+</div>
+</div></div>
+</div>
+</section>
+
+<section id="screen">
+<div class="sec-head"><span class="sec-tag">03 / ROUTING</span><h2>线索初筛器</h2></div>
+<p class="hint">工作流 S4 的可交互演示。点一个示例，或直接输入评论/私信，看它如何被打标签、判优先级并生成对应话术。</p>
+<div class="examples">
+<button class="ex">请问巴西开店需要什么资料？</button>
+<button class="ex">我们公司发票不合规会有什么影响？</button>
+<button class="ex">清关一般要多久，海外仓靠谱吗？</button>
+<button class="ex">这个服务多少钱，能报价吗？</button>
+</div>
+<div class="console">
+  <div class="term">
+    <div class="term-bar"><i class="dot r"></i><i class="dot y"></i><i class="dot g"></i><span>lead-router / stdin</span><span class="live"><i></i>RUNNING</span></div>
+    <div class="term-body">
+      <div class="term-label">&gt; input_message</div>
+      <textarea id="msg" class="term-input" placeholder="在这里输入一条评论或私信……"></textarea>
+      <div class="term-foot"><button class="run" id="run">RUN CLASSIFY ↵</button><span class="term-hint">规则命中即返回结构化结果</span></div>
+    </div>
+  </div>
+  <div class="result" id="res"></div>
+</div>
+<div class="rules">
+<h4>ROUTING RULES · 可复用到自动化工具</h4>
+<div class="table-scroll">
+<table>
+<tr><th>KEYWORDS</th><th>LABEL</th><th>PRIORITY</th></tr>
+<tr><td>开店 / 入驻 / 资料 / 流程</td><td>入驻咨询</td><td>高</td></tr>
+<tr><td>税 / 合规 / 发票 / 申报</td><td>税务合规</td><td>高</td></tr>
+<tr><td>清关 / 物流 / 海外仓 / 时效</td><td>物流清关</td><td>中</td></tr>
+<tr><td>多少钱 / 报价 / 费用 / 价格</td><td>价格敏感</td><td>中</td></tr>
+<tr><td>未命中以上</td><td>泛咨询</td><td>低</td></tr>
+</table>
+</div>
+</div>
+</section>
+
+<section id="review">
+<div class="sec-head"><span class="sec-tag">04 / ANALYTICS</span><h2>数据复盘</h2></div>
+<p class="hint">跟踪完整漏斗，而不只是发布篇数。以下为演示数据，用于展示“看什么指标、怎么得出下一步动作”。</p>
+<div class="funnel">
+<div class="fstage"><div class="fk">IMPRESSIONS</div><div class="fv" id="f1">0</div><div class="fbar"><i style="width:100%"></i></div><div class="frate">漏斗起点</div></div>
+<div class="fstage"><div class="fk">ENGAGEMENT</div><div class="fv" id="f2">0</div><div class="fbar"><i style="width:4%"></i></div><div class="frate" id="r2">—</div></div>
+<div class="fstage"><div class="fk">DM</div><div class="fv" id="f3">0</div><div class="fbar"><i style="width:1%"></i></div><div class="frate" id="r3">—</div></div>
+<div class="fstage"><div class="fk">QUALIFIED LEADS</div><div class="fv" id="f4">0</div><div class="fbar"><i style="width:0.3%"></i></div><div class="frate" id="r4">—</div></div>
+</div>
+<div class="table-scroll">
+<table>
+<tr><th>WEEK</th><th>PLATFORM</th><th>ANGLE</th><th>IMPRESSIONS</th><th>ENGAGE</th><th>DM</th><th>LEADS</th></tr>
+<tr><td>W1</td><td>公众号</td><td>政策解读型</td><td class="mono">1,200</td><td class="mono">46</td><td class="mono">8</td><td class="mono">2</td></tr>
+<tr><td>W1</td><td>小红书</td><td>资料清单型</td><td class="mono">8,600</td><td class="mono">320</td><td class="mono">35</td><td class="mono">7</td></tr>
+<tr><td>W1</td><td>视频号</td><td>税改小包</td><td class="mono">4,200</td><td class="mono">150</td><td class="mono">12</td><td class="mono">3</td></tr>
+<tr><td>W2</td><td>公众号</td><td>卖家视角改写</td><td class="mono">2,100</td><td class="mono">95</td><td class="mono">21</td><td class="mono">5</td></tr>
+<tr><td>W2</td><td>小红书</td><td>清关自查清单</td><td class="mono">11,200</td><td class="mono">480</td><td class="mono">52</td><td class="mono">11</td></tr>
+</table>
+</div>
+<div class="conclusion"><b>INSIGHT / </b>标题从「政策解读」改成「卖家要做什么」后，公众号私信从 8 涨到 21；小红书「自查清单」类钩子带来 11 条有效线索。结论已写回下一轮选题与提示词——B 端内容要先说痛点，钩子要给具体资料，而不是“欢迎咨询”。</div>
+</section>
+
+<section id="fit">
+<div class="sec-head"><span class="sec-tag">05 / FIT</span><h2>我为什么能把它跑通</h2></div>
+<p class="hint">以下三项来自过往真实工作经历，不是本 Demo 的演示数据。它们对应这个岗位最核心的三条要求。</p>
+<div class="fitgrid">
+  <div class="fit"><div class="fit-top"><span class="fit-id">MATCH 01</span><span class="match">高匹配</span></div><div class="pnum">1h → 15min</div><h4>AI 工作流搭建能力</h4><p>独立搭建“导入素材→自动混剪→智能配音→批量成片”工作流，单条制作周期缩短 75%，产能提升约 300%。</p><div class="map">对应岗位：把 AI 内容工作流从 0 到 1 搭起来，不靠人工堆砌。</div></div>
+  <div class="fit"><div class="fit-top"><span class="fit-id">MATCH 02</span><span class="match">高匹配</span></div><div class="pnum">10 accts</div><h4>批量生产与赛马机制</h4><p>从 0 搭建账号矩阵，日均产出 20–35 条，累计发布 1000+ 视频，引导下载 5000+ 次；用播放量、复制率、下载数日报分配资源。</p><div class="map">对应岗位：公众号 / 小红书 / 视频号矩阵运营，用数据识别高转化角度。</div></div>
+  <div class="fit"><div class="fit-top"><span class="fit-id">MATCH 03</span><span class="match">高匹配</span></div><div class="pnum">2M+ views</div><h4>爆款与转化结果</h4><p>单条最高播放 200 万+，单月最高收益破万元；提炼高转化模板与 SOP 并培训新人，具备从不确定流量到可控产出的经验。</p><div class="map">对应岗位：内容要能引流、能带来咨询，对线索和转化负责。</div></div>
+</div>
+</section>
+
+<section id="gallery">
+<div class="sec-head"><span class="sec-tag">06 / PORTFOLIO</span><h2>作品集截图</h2></div>
+<p class="hint">过往真实账号的后台数据截图，未修饰。点击任意图片放大查看细节，手机端可左右滑动切换。数据口径见每张图下方标注。</p>
+<div class="gallery" id="galleryGrid">
+  <div class="shot" data-src="images/portfolio-01.jpg"><div class="shot-ph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg><b>加载中…</b></div><div class="shot-cap"><em>01</em><b>28 天核心指标总览</b><span>播放量 2M（+17.6%）· 评论 3.9K（+1135.1%）· 主页访问 13K（+40.2%）</span></div></div>
+  <div class="shot" data-src="images/portfolio-02.jpg"><div class="shot-ph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg><b>加载中…</b></div><div class="shot-cap"><em>02</em><b>人气作品 Top 5</b><span>单条 96K–459K 播放 · "How to" 系列模板化选题</span></div></div>
+  <div class="shot" data-src="images/portfolio-03.jpg"><div class="shot-ph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg><b>加载中…</b></div><div class="shot-cap"><em>03</em><b>账号主页与内容矩阵</b><span>6,521 粉丝 · 265.4K 获赞 · 置顶 + 九宫格内容布局</span></div></div>
+  <div class="shot" data-src="images/portfolio-04.jpg"><div class="shot-ph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg><b>加载中…</b></div><div class="shot-cap"><em>04</em><b>观众增长与画像</b><span>观众 1.6M · 新观众 1.5M（+15.7%）· 性别/年龄/地域分布</span></div></div>
+</div>
+</section>
+
+<div class="lightbox" id="lightbox">
+<button class="lb-close" id="lbClose" aria-label="关闭">×</button>
+<button class="lb-nav lb-prev" id="lbPrev" aria-label="上一张">‹</button>
+<img id="lbImg" src="" alt="作品集截图">
+<button class="lb-nav lb-next" id="lbNext" aria-label="下一张">›</button>
+<div class="lb-count" id="lbCount"></div>
+</div>
+
+<p class="foot-note">NOTE · 工作流 / 内容案例 / 初筛器 / 数据复盘为面试演示样例，非真实业绩；能力匹配与作品集截图为真实经历与材料。<br>Prompt templates · samples · data → see /prompts /samples /data in this repo.</p>
+
+</div>
+
+<button id="toTop" aria-label="返回顶部"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg></button>
+
+<nav class="mobile-tabs" aria-label="移动端快捷导航">
+<a href="#flow" class="active"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="15" y="3" width="6" height="6" rx="1"/><rect x="9" y="15" width="6" height="6" rx="1"/><path d="M6 9v3h12V9M12 12v3"/></svg>工作流</a>
+<a href="#case"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg>内容案例</a>
+<a href="#screen"><svg viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg>线索初筛</a>
+<a href="#review"><svg viewBox="0 0 24 24"><path d="M3 3v18h18M7 16l4-5 4 3 5-7"/></svg>数据复盘</a>
+<a href="#fit"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M8.5 13l-1.5 8 5-3 5 3-1.5-8"/></svg>能力匹配</a>
+<a href="#gallery"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>作品集</a>
+</nav>
+
+<script>
+document.querySelectorAll('.tab').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('on')});
+    document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on')});
+    btn.classList.add('on');
+    document.getElementById(btn.dataset.t).classList.add('on');
+  });
+});
+var rules=[
+  {k:['开店','入驻','资料','流程'],tag:'入驻咨询',reply:'已发送《巴西开店资料清单》，需要协助可留下联系方式。',p:'高',cls:'high',next:'流转给业务顾问，跟进入驻意向'},
+  {k:['税','合规','发票','申报'],tag:'税务合规',reply:'这个问题需要结合你的业务模式，我请财税顾问跟你对接。',p:'高',cls:'high',next:'转财税顾问，附业务模式问卷'},
+  {k:['清关','物流','海外仓','时效'],tag:'物流清关',reply:'已发送《清关自查清单》，具体线路我请供应链同事跟进。',p:'中',cls:'mid',next:'转供应链，确认目标站点与品类'},
+  {k:['多少钱','报价','费用','价格'],tag:'价格敏感',reply:'这边有同类型卖家的案例，先发你参考，再约时间细聊。',p:'中',cls:'mid',next:'先发案例建立信任，再约业务沟通'}
+];
+function classify(text){
+  for(var i=0;i<rules.length;i++){for(var j=0;j<rules[i].k.length;j++){
+    if(text.indexOf(rules[i].k[j])>=0){return {rule:rules[i],why:'命中关键词「'+rules[i].k[j]+'」'};}
+  }}
+  return {rule:{tag:'泛咨询',reply:'感谢关注，请问你目前主要想解决哪方面问题？',p:'低',cls:'low',next:'进入普通私信队列，等待进一步提问'},why:'未命中业务关键词'};
+}
+function runScreen(){
+  var text=document.getElementById('msg').value.trim();
+  var res=document.getElementById('res');
+  if(!text){res.innerHTML='<div class="head">RESPONSE / ERROR</div><div class="jline"><span class="jval">请输入一条评论或私信。</span></div>';res.classList.add('on');return;}
+  var hit=classify(text),r=hit.rule;
+  res.innerHTML='<div class="head">RESPONSE / 200 OK</div>'+
+    '<div class="jline"><span class="jkey">label</span><span class="jval"><span class="str">"'+r.tag+'"</span></span></div>'+
+    '<div class="jline"><span class="jkey">priority</span><span class="jval"><span class="prio '+r.cls+'">'+r.p+'</span></span></div>'+
+    '<div class="jline"><span class="jkey">matched</span><span class="jval">'+hit.why+'</span></div>'+
+    '<div class="jline"><span class="jkey">next</span><span class="jval">'+r.next+'</span></div>'+
+    '<div class="reply"><div class="jkey">suggested_reply</div><span id="replyText">'+r.reply+'</span><br><button class="copy" id="copyBtn">COPY ↵</button></div>';
+  res.classList.add('on');
+  document.getElementById('copyBtn').addEventListener('click',function(){
+    var t=document.getElementById('replyText').textContent;
+    if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){this.textContent='COPIED ✓';}.bind(this));}
+    else{this.textContent='请手动复制';}
+  });
+}
+document.getElementById('run').addEventListener('click',runScreen);
+document.querySelectorAll('.ex').forEach(function(b){
+  b.addEventListener('click',function(){document.getElementById('msg').value=b.textContent;runScreen();});
+});
+(function(){
+  var rows=[['1,200','46','8','2'],['8,600','320','35','7'],['4,200','150','12','3'],['2,100','95','21','5'],['11,200','480','52','11']];
+  var sums=[0,0,0,0];
+  rows.forEach(function(r){r.forEach(function(v,i){sums[i]+=Number(v.replace(/,/g,''));});});
+  for(var i=0;i<4;i++){document.getElementById('f'+(i+1)).textContent=sums[i].toLocaleString();}
+  document.getElementById('r2').textContent='互动率 <b>'+(sums[1]/sums[0]*100).toFixed(1)+'%</b>';
+  document.getElementById('r3').textContent='私信率 <b>'+(sums[2]/sums[0]*100).toFixed(2)+'%</b>';
+  document.getElementById('r4').textContent='线索率 <b>'+(sums[3]/sums[0]*100).toFixed(2)+'%</b>';
+  var bars=document.querySelectorAll('.fbar i');
+  bars[1].style.width=(sums[1]/sums[0]*100).toFixed(1)+'%';
+  bars[2].style.width=(sums[2]/sums[0]*100).toFixed(2)+'%';
+  bars[3].style.width=(sums[3]/sums[0]*100).toFixed(2)+'%';
+})();
+var toTop=document.getElementById('toTop');
+window.addEventListener('scroll',function(){toTop.classList.toggle('show',window.scrollY>360);},{passive:true});
+toTop.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+var links=document.querySelectorAll('a[href^="#"]');
+var sections=['flow','case','screen','review','fit','gallery'].map(function(id){return document.getElementById(id);});
+window.addEventListener('scroll',function(){
+  var cur='';
+  sections.forEach(function(s){if(s && s.getBoundingClientRect().top<=140){cur=s.id;}});
+  links.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+cur);});
+},{passive:true});
+
+(function(){
+  var shots=Array.prototype.slice.call(document.querySelectorAll('.shot'));
+  var loaded=[];
+  shots.forEach(function(s){
+    var src=s.getAttribute('data-src');
+    var img=new Image();
+    img.onload=function(){
+      s.querySelector('.shot-ph').style.display='none';
+      s.insertBefore(img,s.firstChild);
+      img.alt=s.querySelector('.shot-cap').textContent;
+      loaded.push(img);
+    };
+    img.src=src;
+  });
+  var lb=document.getElementById('lightbox'),lbImg=document.getElementById('lbImg'),lbCount=document.getElementById('lbCount'),idx=0;
+  function show(i){
+    if(!loaded.length)return;
+    idx=(i+loaded.length)%loaded.length;
+    lbImg.src=loaded[idx].src;
+    lbCount.textContent=(idx+1)+' / '+loaded.length;
+    lb.classList.add('on');
+  }
+  shots.forEach(function(s){s.addEventListener('click',function(){
+    var img=s.querySelector('img');
+    if(img)show(loaded.indexOf(img));
+  });});
+  document.getElementById('lbClose').addEventListener('click',function(){lb.classList.remove('on');});
+  document.getElementById('lbPrev').addEventListener('click',function(){show(idx-1);});
+  document.getElementById('lbNext').addEventListener('click',function(){show(idx+1);});
+  lb.addEventListener('click',function(e){if(e.target===lb)lb.classList.remove('on');});
+  document.addEventListener('keydown',function(e){
+    if(!lb.classList.contains('on'))return;
+    if(e.key==='Escape')lb.classList.remove('on');
+    if(e.key==='ArrowLeft')show(idx-1);
+    if(e.key==='ArrowRight')show(idx+1);
+  });
+  var sx=0;
+  lb.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;},{passive:true});
+  lb.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)show(idx+(dx<0?1:-1));},{passive:true});
+})();
+</script>
+</body>
+</html>
